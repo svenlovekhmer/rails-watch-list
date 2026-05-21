@@ -18,9 +18,13 @@ class ListsController < ApplicationController
   end
 
   def edit
+    # @bookmark = Bookmark.new
   end
 
   def show
+    @bookmarks = @list.bookmarks
+    @bookmark = Bookmark.new
+    @available_movies = Movie.where.not(id: @list.movies.pluck(:id))
   end
 
   def update

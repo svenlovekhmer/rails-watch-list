@@ -21,48 +21,62 @@
   <div class="row g-4">
     <% @lists.each do |list| %>
       <div class="col-md-6 col-xl-4">
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100">
-          <div
-            class="bg-dark text-white p-5 d-flex flex-column justify-content-between"
-            style="min-height: 220px;
-                   background:
-                   linear-gradient(
-                   135deg,
-                   #1f1f1f 0%,
-                   #343a40 100%
-                   );"
-          >
-            <div class="d-flex justify-content-between align-items-start">
-              <span class="badge rounded-pill text-bg-light">
-                <%= pluralize(list.bookmarks.count, "movie") %>
-              </span>
-              <div class="d-flex gap-3">
-                <%= link_to edit_list_path(list),
-                      class: "text-white fs-5" do %>
-                  <i class="fa-solid fa-pen-to-square"></i>
-                <% end %>
-                <%= link_to list_path(list),
-                      data: {
-                        turbo_method: :delete,
-                        turbo_confirm: "Delete this list?"
-                      },
-                      class: "text-danger fs-5" do %>
-
-                  <i class="fa-regular fa-trash-can"></i>
-
-                <% end %>
-              </div>
-            </div>
-            <div>
-              <h2 class="display-6 fw-bold mb-3">
-                <%= list.name %>
-              </h2>
-              <%= link_to "Open list",
-                    list_path(list),
-                    class: "btn btn-light rounded-pill px-4" %>
-            </div>
-          </div>
-        </div>
+        <div class="position-relative rounded-4 overflow-hidden"
+     style="height: 260px;">
+  <% if list.movies.any? %>
+    <%= image_tag list.movies.sample.poster_url,
+          class: "w-100 h-100",
+          style: "object-fit: cover;" %>
+    <div
+      class="position-absolute top-0 start-0 w-100 h-100"
+      style="
+        background:
+        linear-gradient(
+        to top,
+        rgba(0,0,0,0.85),
+        rgba(0,0,0,0.2)
+        );
+      "
+    ></div>
+  <% else %>
+    <div
+      class="w-100 h-100"
+      style="
+        background:
+        linear-gradient(
+        135deg,
+        #1f1f1f 0%,
+        #343a40 100%
+        );
+      "
+    ></div>
+  <% end %>
+  <div class="position-absolute top-0 end-0 p-3 d-flex gap-2">
+    <%= link_to edit_list_path(list),
+          class: "btn btn-light btn-sm rounded-pill shadow-sm" do %>
+      <i class="fa-solid fa-pen-to-square"></i>
+    <% end %>
+    <%= link_to list_path(list),
+          data: {
+            turbo_method: :delete,
+            turbo_confirm: "Delete this list?"
+          },
+          class: "btn btn-danger btn-sm rounded-pill shadow-sm" do %>
+      <i class="fa-regular fa-trash-can"></i>
+    <% end %>
+  </div>
+  <div class="position-absolute bottom-0 start-0 p-4 text-white w-100">
+    <h2 class="fw-bold mb-1">
+      <%= list.name %>
+    </h2>
+    <p class="mb-3 text-white-50">
+      <%= pluralize(list.movies.count, "movie") %>
+    </p>
+    <%= link_to "Open list",
+          list_path(list),
+          class: "btn btn-light rounded-pill px-4 shadow-sm" %>
+  </div>
+</div>
       </div>
     <% end %>
   </div>
