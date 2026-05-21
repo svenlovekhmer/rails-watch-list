@@ -3,21 +3,40 @@ class BookmarksController < ApplicationController
 
   def create
     @list = List.find(params[:list_id])
-    @movies_ids = params["bookmark"]["movie_ids"].reject(&:blank?)
-    @movies_ids.each do |movie_id|
-      Bookmark.find_or_create_by!(
+    # Cas 1 : plusieurs films depuis la modale
+    if params[:bookmark][:movie_ids]
+      movie_ids = params[:bookmark][:movie_ids].reject(&:blank?)
+    # Cas 2 : un seul film depuis les tests
+    elsif params[:bookmark][:movie_id]
+      movie_ids = [ params[:bookmark][:movie_id] ]
+    # Cas 3 : rien envoyé
+    else
+      movie_ids = []
+    end
+    movie_ids.each do |movie_id|
+    params[:bookmark][:comment].presence ? comment = params[:bookmark][:comment] : comment = "Added from list"
+      @bookmark = Bookmark.new(
         movie_id: movie_id,
         list: @list,
-      ) do |bookmark|
-        bookmark.comment = "Added from list"
+        comment: comment
+      )
+      if @bookmark.save
+        redirect_to list_path(@list)
+      else
+        render :new, status: :unprocessable_entity
       end
     end
-    redirect_to list_path(@list)
   end
 
   def destroy
     @bookmark.destroy
     redirect_to list_path(@bookmark.list), status: :see_other
+  end
+
+  def new
+    @list = List.find(params[:list_id])
+    @bookmark = Bookmark.new
+    @bookmark.list = @list
   end
 
   private
