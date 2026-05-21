@@ -1,0 +1,7 @@
+<%= simple_form_for @list do |f| %>
+  <%= f.input :name %>
+  <%= f.association :movies,
+        collection: Movie.order(:title),
+        as: :check_boxes %>
+  <%= f.button :submit %>
+<% end %>
